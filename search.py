@@ -116,12 +116,53 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+    start_node = problem.getStartState()
+    queue = util.Queue()
+    cost = 0
+    action = []
+    visited = {}
+    queue.push((start_node, action, cost))
+
+    while not queue.isEmpty():
+        current_node = queue.pop()
+
+        if problem.isGoalState(current_node[0]):
+            return current_node[1]
+
+        if current_node[0] not in visited:
+            visited[current_node[0]] = True
+            for nextState, action, cost in problem.getSuccessors(current_node[0]):
+                if nextState and nextState not in visited:
+                    queue.push(
+                        (nextState, current_node[1] + [action], current_node[2] + cost))
+
     util.raiseNotDefined()
 
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+
+    priority_queue = util.PriorityQueue()
+    start_node = problem.getStartState()
+    visited = {}
+    cost = 0
+    action = []
+    priority_queue.push((start_node, action, cost), cost)
+
+    while not priority_queue.isEmpty():
+        current_node = priority_queue.pop()
+
+        if problem.isGoalState(current_node[0]):
+            return current_node[1]
+
+        if current_node[0] not in visited:
+            visited[current_node[0]] = True
+            for nextState, action, cost in problem.getSuccessors(current_node[0]):
+                if nextState and nextState not in visited:
+                    priority_queue.push(
+                        (nextState, current_node[1] + [action], current_node[2] + cost), current_node[2] + cost)
+
     util.raiseNotDefined()
 
 
@@ -136,6 +177,28 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+
+    priority_queue = util.PriorityQueue()
+    start_node = problem.getStartState()
+    visited = {}
+    cost = 0
+    action = []
+    priority_queue.push((start_node, action, cost), cost)
+
+    while not priority_queue.isEmpty():
+        current_node = priority_queue.pop()
+
+        if problem.isGoalState(current_node[0]):
+            return current_node[1]
+
+        if current_node[0] not in visited:
+            visited[current_node[0]] = True
+
+            for nextState, action, cost in problem.getSuccessors(current_node[0]):
+                if nextState and nextState not in visited:
+                    priority_queue.push((nextState, current_node[1] + [
+                                        action], current_node[2] + cost), current_node[2] + cost + heuristic(nextState, problem))
+
     util.raiseNotDefined()
 
 
